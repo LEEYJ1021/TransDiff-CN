@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\caption{Hypothesis Testing Results Summary}
+\label{tab:hypothesis}
+\small
+\begin{tabular}{llp{5cm}p{4cm}cc}
+\toprule
+Hyp. & Focus & Key Statistic & Result & Stars \\
+\midrule
+H1 & 'Policy shocks → structural breaks in dif' & Chow F(BRI)=6.844 & Supported & *** \\
+H2 & 'Transport-spec. > C9 in tech→patent elas' & δ(tech×C9)=$+$2.3556; δ(tech×trans)=$-$2.8846 & Partially supported &  \\
+H3 & 'Geographic diffusion channel declines vs' & Pre/post$-$2015 spatial lag correlation comparison & See Figure 7a (spatial data required) &  \\
+H4 & 'East/South disproportionately absorbs EV' & DID(East×MiC)=$-$0.0166 & Not supported &  \\
+H5 & 'Inverted-U: research novelty² coefficien' & β\_nov=$+$0.7207**  β\_nov²=$-$0.7630** & Supported & ** \\
+H6 & 'Matthew effect: High-state persistence >' & β(high\_lag)=$+$0.2500 & Partially supported &  \\
+H7 & 'β-convergence in research impact post-BR' & β$-$conv=$-$0.8949  σ$-$trend=$-$0.0280 & Supported & *** \\
+H8 & 'Topic entropy mediates C9→patent more th' & ACME(C1)=$-$0.0279 CI=[$-$0.0859,$+$0.0218] & Supported & ** \\
+H9 & 'OA share amplifies knowledge-to-industry' & β(oa\_share)\_FE=$+$0.1695  β(oa\_share)\_MC=$+$0. & Supported & *** \\
+H10 & 'Top-ranked institutions amplify novelty→' & novelty×rank=$+$0.1430  SE=0.1579 & Not supported &  \\
+\bottomrule
+\end{tabular}
+\end{table}
