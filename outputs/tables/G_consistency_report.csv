@@ -1,0 +1,24 @@
+﻿,item,manuscript,recomputed,match
+0,institutions,33.0,33.0,True
+1,institution-work rows,11271.0,11271.0,True
+2,unique works,9294.0,9294.0,True
+3,non-empty cells,541.0,541.0,True
+4,"sigma 2007-12 (text, D1)",0.478,0.4779,True
+5,"sigma 2021-23 (text, D1)",0.105,0.1052,True
+6,map sigma 2007-12 (D3),0.22,0.2113,True
+7,map sigma 2013-19 (D3),0.16,0.1607,True
+8,map sigma 2020-23 (D3),0.09,0.086,True
+9,"paper SD 2007 (Sec 4.2, unique works)",0.675,0.6754,True
+10,"paper SD 2023 (Sec 4.2, unique works)",0.222,0.2224,True
+11,"paper SD 2007 (Fig 2a, rows)",0.65,0.6501,True
+12,"paper SD 2023 (Fig 2a, rows)",0.225,0.2251,True
+13,Table1 cumulative dSD,-0.135,-0.1349,True
+14,Table1 5y dSD,-0.107,-0.1072,True
+15,Table1 5y d_eq1,0.041,0.0412,True
+16,Table1 5y nonCN dSD,-0.089,-0.0885,True
+17,primary fixed-window cited_pre min,7.0,7.0,True
+18,primary fixed-window cited_pre max,20.0,20.0,True
+19,Table3 nofloor I,-0.324,-0.2625,False
+20,Table3 floor25 I,-0.143,-0.1417,True
+21,Spearman rho,-0.03,-0.0186,False
+22,Spearman p,0.72,0.7888,False

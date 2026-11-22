@@ -1,0 +1,25 @@
+{
+  "seed": 20261122,
+  "n_final": 49999,
+  "n_year": 4999,
+  "n_rho": 9999,
+  "spatial_block": true,
+  "md5": {
+    "A_paper_level_SD_33.csv": "3ffd480e0647de995c5d9bf9a7519f05",
+    "A_sigma_definitions.csv": "83a4c8638320954bd3ab4e650ffbfa3a",
+    "B_table1_contrast.csv": "f41a398d504c7b72f578befd7244d1b7",
+    "C_same_exposure.csv": "7d3c9f9fa0b6a74c48a72f3a3b58b0a3",
+    "C_same_exposure_summary.csv": "66878bcc089e026810aec4e6dcca59e1",
+    "D_event_year_scan.csv": "acbb23150eb82961c0157b71c58bff9b",
+    "D_group_cells_primary.csv": "54cf2456527b90f292ced442bf6864f1",
+    "D_sensitivity.csv": "988e746819ddbdc6df132f77afa4cc60",
+    "D_table2_final.csv": "83e4f9072865a4b0505a26e45636687d",
+    "E_2012_leave_one_institution_out.csv": "1415a98f3ba0fb442ebc087645e40e19",
+    "E_2012_loo.csv": "ab2ca49d6065e5d43ff9abb912d19628",
+    "E_sigma_vs_noise.csv": "36e5776fea6ddc9b73f2b5b4f02ce57b",
+    "F_coauthor_robustness.csv": "23a2f0ff73c2a0c32236b71a551f095d",
+    "F_noise_adjusted_moran.csv": "0a60f87c1253263d608ca744454e0fb9",
+    "F_table3_definition_check.csv": "d39fedeea28e60aff1436577854d35ec",
+    "G_consistency_report.csv": "670c4f6935c1dae13bfe394eff47d3ce"
+  }
+}
