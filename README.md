@@ -302,11 +302,11 @@ The institution-year panel, linked paper-patent file, institution coordinate fil
 
 - Reconstructed the analysis from the data export in response to the Editor's and Reviewers' comments; the paper became a measurement paper (title changed accordingly).
 - Added: population including uncited works; fixed citation windows and equal-exposure comparison; selection rule applied to the candidate pool; sampling-noise benchmark; random-topic-group placebo design; alternative weights and co-authorship weights; link-quality documentation; ledger and manifest.
-- Removed: hypotheses H1-H6 / S1-S6 structure; Chow and Bai-Perron tests; Phillips-Sul and beta-convergence; Moran's I of -0.278 and the composite weight matrix; novelty optimum; open-access analysis; policy recommendations; Bayesian transition and spatial negative-binomial models.
+- Removed: hypothesis structure H1-H4 / S1-S6; Chow and Bai-Perron tests; Phillips-Sul and beta-convergence; Moran's I of -0.278 and the composite weight matrix; novelty optimum; open-access analysis; policy recommendations; Bayesian transition and spatial negative-binomial models.
 - Corrected: panel file with zero-filled and missing cells replaced by a 541-cell panel with no zero filling.
 - Repository: first-submission files moved to `legacy_v1/` (author identifiers redacted; large and LFS-tracked result files are not duplicated there and remain in tag `v1.0-original`); Git LFS rules removed.
 
-**v2.1 (first-submission repository; superseded)** Documentation reconciliation of the first submission. See `legacy_v1/README_v2.1.md`. Its results are not used in the revised manuscript.
+**v2.1 (first-submission repository; superseded).** Documentation reconciliation of the first submission. See `legacy_v1/README_v2.1.md`. Its results are not used in the revised manuscript.
 
 ---
 
