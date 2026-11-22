@@ -1,0 +1,7 @@
+spec,n,I,p
+Distance (25 km floor),32,-0.18353571061062268,0.06792
+"Distance, excl. same city",32,0.02387248138282987,0.2592
+Co-authorship (count),32,0.10128242196568157,0.00784
+Co-authorship (log),32,0.06848021604798281,0.01464
+Co-authorship (binary),32,0.044198575486937126,0.04924
+"Co-authorship, excl. same city",32,0.2153819565395768,0.00012

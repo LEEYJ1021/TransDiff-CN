@@ -1,0 +1,38 @@
+{
+  "seed": 20261122,
+  "event": 2013,
+  "HZ_PRI": 2023,
+  "N_DRAW": 1000,
+  "B_BOOT": 1000,
+  "primary": "BRI_full[txt]",
+  "bri_keywords": {
+    "railway": "railway",
+    "high_speed_rail": "high-speed rail",
+    "rail_transit": "rail transit",
+    "port": "\\bports?\\b",
+    "shipping": "shipping",
+    "maritime": "maritime",
+    "container": "container",
+    "freight": "freight",
+    "logistics": "logistics",
+    "belt_road": "belt and road",
+    "supply_chain": "supply chain",
+    "intermodal": "intermodal",
+    "cross_border": "cross-border",
+    "corridor": "corridor"
+  },
+  "ambiguous": [
+    "belt_road",
+    "container",
+    "corridor",
+    "cross_border",
+    "intermodal",
+    "supply_chain"
+  ],
+  "nev_rx": "electric vehicle|battery|charging|new energy vehicle|hybrid vehicle|fuel cell",
+  "placebo_rx": "traffic signal|pavement|asphalt|driver|pedestrian|crash|road safety|traffic flow",
+  "tr_broad": "transport|traffic|railway|\\brail\\b|vehicle|\\broads?\\b|highway|logistic|shipping|aviation|airport|\\bports?\\b|freight|transit|pavement|automotive|driving|maritime|mobility|intermodal",
+  "n_papers": 213328,
+  "md5_family_links": "5c5b90adb0a199fc99fd013af907361f",
+  "note": "all tables/figures generated in this single script from v7 family-link file and population file"
+}

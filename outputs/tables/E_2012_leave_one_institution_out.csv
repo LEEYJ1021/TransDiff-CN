@@ -1,0 +1,9 @@
+﻿Institution,n_works,mean_cit,sigma_without,sigma_change
+University of Chinese Academy of Sciences,3,34.67,0.59,-0.097
+Southwest Jiaotong University,2,20.0,0.641,-0.046
+Beijing University of Technology,3,14.67,0.662,-0.026
+Central South University,5,9.8,0.681,-0.007
+Wuhan University of Technology,2,1.0,0.682,-0.006
+Harbin Institute of Technology,8,1.12,0.685,-0.003
+Peking University,17,8.24,0.687,-0.001
+Beijing Jiaotong University,9,1.33,0.688,0.0

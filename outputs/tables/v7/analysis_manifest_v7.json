@@ -1,0 +1,55 @@
+{
+  "seed": 20261122,
+  "event": 2013,
+  "HZ": {
+    "pri": 2023,
+    "app": 2023,
+    "pub": 2025
+  },
+  "HZ_SENS": {
+    "pri": 2024,
+    "app": 2024,
+    "pub": 2026
+  },
+  "KS": [
+    3,
+    5
+  ],
+  "mature": [
+    2007,
+    2010
+  ],
+  "n_draw": 300,
+  "bri_keywords": {
+    "railway": "railway",
+    "high_speed_rail": "high-speed rail",
+    "rail_transit": "rail transit",
+    "port": "\\bports?\\b",
+    "shipping": "shipping",
+    "maritime": "maritime",
+    "container": "container",
+    "freight": "freight",
+    "logistics": "logistics",
+    "belt_road": "belt and road",
+    "supply_chain": "supply chain",
+    "intermodal": "intermodal",
+    "cross_border": "cross-border",
+    "corridor": "corridor"
+  },
+  "ambiguous": [
+    "belt_road",
+    "container",
+    "corridor",
+    "cross_border",
+    "intermodal",
+    "supply_chain"
+  ],
+  "nev_rx": "electric vehicle|battery|charging|new energy vehicle|hybrid vehicle|fuel cell",
+  "placebo_rx": "traffic signal|pavement|asphalt|driver|pedestrian|crash|road safety|traffic flow",
+  "tr_broad": "transport|traffic|railway|\\brail\\b|vehicle|\\broads?\\b|highway|logistic|shipping|aviation|airport|\\bports?\\b|freight|transit|pavement|automotive|driving|maritime|mobility|intermodal",
+  "acad_rx": "UNIV|UNIVERSITY|INST\\b|INSTITUTE|ACAD|COLLEGE|SCHOOL",
+  "n_papers": 213328,
+  "n_patents": 30087,
+  "md5_patents": "f93d4e8c844a99670bab3a94e4c3bf48",
+  "md5_papers": "0effdaf188e1fa1729f2e47901f7b689"
+}

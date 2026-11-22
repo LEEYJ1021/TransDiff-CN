@@ -1,0 +1,15 @@
+outcome,population,target,stat,observed,p_emp,p_adj,bh_p_emp,bh_p_adj,cited_pre,cited_post
+cum_any,all,BRI_full[txt],DID_long,0.5859,0.027,0.2627,0.0863,0.3003,47,595
+cum_any,all,BRI_full[txt],DID_drop2012,0.5661,0.038,0.3067,0.1012,0.3384,47,595
+cum_any,all,BRI_narrow[txt],DID_long,0.8257,0.013,0.046,0.0693,0.1279,33,486
+cum_any,all,BRI_narrow[txt],DID_drop2012,0.8767,0.009,0.03,0.0575,0.1279,33,486
+any3_pri,all,BRI_narrow[txt],DID_long,0.79,0.043,0.3087,0.6873,0.979,11,193
+any3_pri,all,BRI_narrow[txt],DID_drop2012,0.9127,0.028,0.2697,0.6873,0.979,11,193
+any5_pri,all,BRI_narrow[txt],DID_long,0.8794,0.016,0.2198,0.2557,0.8083,15,113
+any5_pri,all,BRI_narrow[txt],DID_drop2012,1.0425,0.009,0.1648,0.2557,0.8083,15,113
+nonCN5_pri,all,BRI_narrow[txt],DID_drop2012,0.8574,0.023,0.1788,0.3477,0.5882,9,49
+cum_any,all,BRI_full[fos],DID_long,0.684,0.042,0.006,0.1033,0.0639,27,281
+cum_any,all,BRI_narrow[fos],DID_long,0.8897,0.016,0.008,0.0731,0.0639,13,191
+cum_any,all,BRI_narrow[fos],DID_drop2012,0.496,0.1469,0.025,0.2238,0.1279,13,191
+cum_any,T_broad,BRI_full[fos],DID_long,0.5546,0.034,0.039,0.0988,0.1279,15,205
+cum_any,T_broad,BRI_narrow[fos],DID_long,0.5419,0.0559,0.048,0.1279,0.1279,13,191

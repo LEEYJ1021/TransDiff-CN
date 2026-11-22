@@ -1,0 +1,9 @@
+﻿,v
+cited_papers(Lens count>=1),16170.0
+of which with >=1 resolved link,16134.0
+link coverage,0.997773654916512
+sum Lens Citing Patents Count,32045.0
+sum linked patent docs,31968.0
+exact match share,0.9964749536178108
+papers with link but Lens count 0,0.0
+"corr(linked_docs, Lens count)",0.9996734105198001

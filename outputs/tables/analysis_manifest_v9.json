@@ -1,0 +1,25 @@
+{
+  "seed": 20261122,
+  "n_draw": 1000,
+  "n_perm": 500,
+  "primary": "BRI_full[txt]",
+  "n_papers": 213328,
+  "bri_kw": {
+    "railway": "railway",
+    "high_speed_rail": "high-speed rail",
+    "rail_transit": "rail transit",
+    "port": "\\bports?\\b",
+    "shipping": "shipping",
+    "maritime": "maritime",
+    "container": "container",
+    "freight": "freight",
+    "logistics": "logistics",
+    "belt_road": "belt and road",
+    "supply_chain": "supply chain",
+    "intermodal": "intermodal",
+    "cross_border": "cross-border",
+    "corridor": "corridor"
+  },
+  "tr_broad": "transport|traffic|railway|\\brail\\b|vehicle|\\broads?\\b|highway|logistic|shipping|aviation|airport|\\bports?\\b|freight|transit|pavement|automotive|driving|maritime|mobility|intermodal",
+  "md5_family_links": "5c5b90adb0a199fc99fd013af907361f"
+}
