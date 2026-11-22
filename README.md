@@ -1,363 +1,315 @@
-# Knowledge-Diffusion Trajectory Diagnostics in Chinese Transportation R&D (2007–2023)
-### A Three-Step Bayesian–Empirical Pipeline for Distinguishing Pathway Reconfiguration from Output Expansion
+# Convergence or Compression? Measurement Sensitivity and Spatial Scale in Patent-Citation Indicators of Chinese Research
 
-[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
-[![PyMC](https://img.shields.io/badge/PyMC-5.x-orange)](https://www.pymc.io/)
+### Replication materials, version 2 (revision R1)
+
+[![Python 3](https://img.shields.io/badge/Python-3.x-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-> **v2.1 Update Note:** This version reconciles the pipeline documentation with the published manuscript's core-hypothesis structure (H1–H4), correcting a prior draft in which six exploratory checks had been inadvertently elevated to numbered confirmatory hypotheses (H2, H3, H4, H6, H8, H10 in the earlier README). Structural-break statistics, institutional counts, and the pre/post-BRI trend description have been corrected to match the manuscript reported in Sections 4.1–4.5. See [Update Log](#update-log-v20--v21) at the bottom of this file for a full diff.
+> **Version note.** This is **v2 (revision R1)**. It replaces the first-submission repository (v1, README v2.1), which is preserved in `legacy_v1/` and in git tag `v1.0-original`. Several headline results of v1 could not be reproduced and are **withdrawn**. [Section 2](#2-what-changed-from-v1-to-v2) lists, item by item, what v1 reported and what v2 reports. The v1 results are not used in the revised manuscript.
 
 ---
 
-## Overview
+## Contents
 
-This repository contains the full analysis pipeline accompanying the paper:
-
-> **"Pathway Reconfiguration, Not Output Expansion: Infrastructure Mega-Programs and the Restructuring of Knowledge-Diffusion Trajectories in National R&D Systems"**
-
-The study asks whether large-scale infrastructure programs alter the *trajectories* through which academic knowledge diffuses into industrial innovation—or merely expand output volumes within pre-existing pathways. This distinction is critical for technology forecasting: conventional indicators (publication counts, patent grants, R&D expenditure) detect output expansion but are systematically blind to pathway reconfiguration.
-
-Using patent-citation intensity as a codified-transfer proxy, the pipeline tests **four pre-registered core hypotheses** (H1–H4), **one robust auxiliary structural pattern** (competitive spatial specialization), and **six further pre-registered exploratory checks** (S1–S6) across 33 Chinese transportation research institutions (2007–2023, 528 institution-year observations). It identifies a structural break coinciding with the Belt and Road Initiative (BRI) launch in 2013 — a break absent for three contemporaneous policy events — and documents rapid post-2013 institutional convergence (σ: 0.47 → 0.11; half-life ≈ 3.1 years).
-
-**Important framing note:** All results are observational. The core-vs-exploratory split reflects a pre-specified organizing criterion (H1–H4 test the paper's central mechanism-specificity claim; S1–S6 test auxiliary moderators of the same mechanism), fixed independently of which checks ultimately proved statistically significant — not a post-hoc reclassification driven by results.
-
-The pipeline is organized into **three sequential steps**:
-
-| Step | Script | Description |
-|------|--------|-------------|
-| 1 | `step1_btm_nlp_v6.py` | NLP feature engineering + Bayesian Transition Model |
-| 2 | `step2_empirical_tra_v4.py` | Empirical hypothesis testing (H1–H4 core + S1–S6 exploratory) |
-| 3 | `step3_supplementary_v2.py` | Robustness checks, convergence diagnostics, and governance dashboard |
+1. [Overview](#1-overview)
+2. [What changed from v1 to v2](#2-what-changed-from-v1-to-v2)
+3. [Repository structure](#3-repository-structure)
+4. [Data](#4-data)
+5. [Analysis modules and where results are stored](#5-analysis-modules-and-where-results-are-stored)
+6. [Main results (revised manuscript)](#6-main-results-revised-manuscript)
+7. [Setup and re-running](#7-setup-and-re-running)
+8. [Reproducibility](#8-reproducibility)
+9. [Known limitations](#9-known-limitations)
+10. [Data availability](#10-data-availability)
+11. [Update log](#11-update-log)
+12. [License](#12-license)
 
 ---
 
-## Repository Structure
+## 1. Overview
+
+A fall in the spread of patent-citation performance across institutions is often read as catch-up, and large transport programmes such as China's Belt and Road Initiative (BRI) are expected to produce it. The revised manuscript asks whether that reading survives once the measurement of the indicator is made explicit.
+
+**Units and data.** 213,328 scholarly works (2007-2023) returned by a "Transportation" query in Lens.org, restricted to authors affiliated with 89 candidate Chinese institutions (including works never cited by patents; 16,170 works, 7.6%, have at least one citing patent), linked to citing-patent records, and a 33-institution subsample selected on patent-cited output.
+
+**Three research questions.**
+
+| ID | Question |
+|---|---|
+| RQ1 | Does the dispersion of patent-citation performance fall once citation exposure, sample selection and sampling noise are handled? |
+| RQ2 | Is anything specific to the BRI period? |
+| RQ3 | How does spatial dependence in outcomes depend on spatial scale, the weight matrix, and whether neighbours are defined by distance or by co-authorship? |
+
+**What the paper does not claim.** The revised paper does not evaluate the BRI (the data contain no measure of programme exposure), does not claim institutional convergence, and does not claim competitive specialisation or institutional lock-in. The BRI date is used only as the temporal context of the observation window.
+
+**Framing.** All results are observational and associational. The contribution is a measurement framework, condensed into four checks (manuscript Section 5.2): (1) fixed citation windows or equal-exposure comparisons, with cell counts; (2) dispersion of institution means reported together with the paper-level distribution, the between-institution variance share and a sampling-noise benchmark; (3) spatial autocorrelation reported with same-city exclusion and alternative weights; (4) period-specific claims tested against placebo event years and random topic groups.
+
+---
+
+## 2. What changed from v1 to v2
+
+| Item | v1 (first submission) | v2 (this revision) |
+|---|---|---|
+| **Question** | Four core hypotheses (H1-H4) and six exploratory checks (S1-S6): BRI-specific structural break, convergence, novelty optimum, open access, competitive spatial specialisation | Three questions (RQ1-RQ3, above). No claim about a BRI effect, institutional convergence or competitive specialisation |
+| **Data** | 33 institutions, 11,271 institution-work rows, 528 usable institution-year observations. An earlier panel file contained 33 zero-filled cells (561 rows against 528 usable) and lacked 13 cells of one institution | Population of 213,328 works from 89 candidate institutions, including uncited works. 33-institution subsample: 11,271 institution-work rows (9,294 unique works), **541 non-empty institution-year cells, none filled with zero** |
+| **Outcome** | Cumulative citing-patent count | Cumulative count (extracted November 2026), **fixed 3- and 5-year windows** (priority date of the citing family), and an equal-exposure comparison across cohorts |
+| **Patent-paper links** | Not documented | 30,087 citing patents linked to works through resolved non-patent citations (32,538 document links collapsed to 25,982 work-family links); 99.8% of cited works have a resolved link, 99.6% match the Lens citing-patent count exactly (correlation 0.9997) |
+| **Citation exposure** | Not addressed | Cumulative cited share peaks at 11.5% (2017 cohort) and falls to 5.5% (2023); at equal exposure the latest cohorts match 2016-18 (ratios 1.14, 1.01, 0.94) |
+| **Dispersion** | sigma 0.471 to 0.111, read as convergence | sigma 0.478 (2007-12) to 0.126 (2020-23), a decline of about 74% (73.6%; 78.0% using 2021-23 alone). Read as compression plus sampling noise (Section 6) |
+| **Structural break** | Chow F = 6.84, Bai-Perron break at 2013, parallel pre-trends | **Removed.** Replaced by a difference-in-differences of a fixed BRI-related keyword group against 1,000 random topic groups, with placebo event years 2010-2016 |
+| **Convergence tests** | beta-convergence (-0.895), Phillips-Sul b = 1.249 ("single club"), half-life 3.1 years | **Removed.** No convergence claim (the earlier "rejects club formation" reading of the Phillips-Sul test was incorrect, since its null is convergence) |
+| **Spatial dependence** | Moran's I = -0.278 (p = .018), composite weight matrix | **Not reproduced; withdrawn.** Reconstructed distance-based values are not significant at 5% and depend on the weights (Section 6) |
+| **Novelty optimum, open access, policy recommendations** | Optimum 0.472; open-access beta = 0.326; funding and portfolio recommendations | **Removed** |
+| **Reproducibility** | Scripts `step1`-`step3`; several headline values not generated by a single script; figures and tables disagreed | Analysis code in `code/` (exported from notebooks); one ledger comparing manuscript and recomputed values; manifest with fixed seed |
+
+**Corrections disclosed in the response to reviewers (Section 7 of that letter).** An earlier panel file contained zero-filled and missing institution-year cells; the original Moran's I of -0.278, the alternative-matrix table and the pairwise results built on that panel could not be reproduced; the original dispersion statistics and several headline values were not generated by a single script.
+
+---
+
+## 3. Repository structure
 
 ```
 .
-├── data/
-│   └── scholarly_works.csv           # Input dataset (see Data section below)
-├── step1_btm_nlp_v6.py               # Step 1: NLP pipeline + Bayesian Transition Model
-├── step2_empirical_tra_v4.py         # Step 2: Mundlak–Chamberlain RE + hypothesis tests
-├── step3_supplementary_v2.py         # Step 3: Convergence clubs + robustness + dashboard
-├── outputs/
-│   ├── btm_nlp_v6/                   # Step 1 outputs (figures, MCMC traces, CSVs)
-│   ├── empirical_tra_v4/             # Step 2 outputs (regression tables, figures, JSON)
-│   └── supplementary_v2/             # Step 3 outputs (convergence, sensitivity, dashboard)
-├── .gitignore
+├── README.md
 ├── LICENSE
-└── README.md
+├── .gitignore
+├── code/
+│   ├── 01_numbers_v7.py              # link construction and cohort numbers (stage v7)
+│   ├── 02_analysis_v7_v8.py          # cohort compression, placebo / random-topic-group analysis (stages v7-v8)
+│   └── 03_recompute_v9_v12.py        # recomputation of all reported numbers, ledger, manifest (stages v9-v12)
+├── data/
+│   └── derived/
+│       ├── paper_family_links.csv.gz # paper-patent family links
+│       └── inst_coords_33.csv        # institution coordinates (33 institutions, 18 cities)
+├── outputs/
+│   ├── tables/                       # result tables of the final stage (v9) and earlier stages
+│   │   ├── v7/                       # link QA, cohort series, accrual curves, placebo (v7)
+│   │   └── v8/                       # cohort compression, contrasts, placebo (v8)
+│   └── final_numbers/                # final table/text fills, consistency ledger, manifest
+├── figures/                          # Figures 1-7 (PDF and PNG) and figure data
+├── docs/
+│   ├── captions_final.txt            # figure captions
+│   ├── captions_fig5to7.txt
+│   └── lens_query.md                 # description of the Lens export
+└── legacy_v1/                        # first-submission scripts and README (superseded)
 ```
 
 ---
 
-## Input Data
+## 4. Data
 
-**File:** `data/scholarly_works.csv`
+### 4.1 Raw data (not redistributed)
 
-A bibliometric dataset of scholarly works affiliated with **33 major Chinese research institutions** active in transportation-related research, covering publication years 2007–2023. The dataset was exported from [Lens.org](https://www.lens.org) and contains the following key columns:
+Raw Lens.org exports are **not** included in this repository. `docs/lens_query.md` describes the export.
 
-| Column | Description |
-|--------|-------------|
-| `Lens ID` | Unique paper identifier |
-| `Title` | Paper title |
-| `Publication Year` | Year of publication (2007–2023) |
-| `Abstract` | Full abstract text (truncated to 800 characters in NLP preprocessing) |
-| `Keywords` | Author-supplied keywords |
-| `Fields of Study` | Discipline tags (semicolon-separated) |
-| `Author/s` | Author list (semicolon-separated) |
-| `Institution` | Corresponding or primary institution name |
-| `Citing Patents Count` | Number of patents citing this paper (**primary outcome variable**) |
-| `Citing Works Count` | Number of academic works citing this paper |
-| `Is Open Access` | Boolean: open-access status |
-| `References` | Reference list (semicolon-separated) |
-| `Funding` | Funding acknowledgement text |
+| Item | Description |
+|---|---|
+| Source | Lens.org scholarly works and citing patents (non-patent-citation links) |
+| Extraction | November 2026 |
+| Query | "Transportation", restricted to authors affiliated with any of 89 candidate Chinese institutions; run year by year, publication years 2007-2023 |
+| Population | 213,328 works (including works never cited by patents) |
+| Cited works | 16,170 works (7.6%) with at least one citing patent |
 
-> **Note:** Raw export contains approximately 13,350 rows and 33 columns. After year filtering (2007–2023) and exclusion of rows with missing patent-citation data, the working dataset contains **11,271 papers** across **33 institutions**, aggregating to **528 institution-year observations** (94% of the theoretical 561-cell balanced panel; 33 cells excluded for zero patent-cited output).
+### 4.2 Derived files included here
 
-### Institutions Covered
+| File | Content |
+|---|---|
+| `data/derived/paper_family_links.csv.gz` | Links between works and citing-patent families (25,982 work-family links) |
+| `data/derived/inst_coords_33.csv` | Columns: institution, city, latitude, longitude, region, type, order. Used for all distance-based statistics. 33 institutions in 18 cities, 8 of them in Beijing. Coordinates were carried over from the first-submission scripts and were not independently re-verified |
 
-The 33 institutions span five institutional-type categories and six geographic macro-regions of China, ensuring adequate representation of absorptive capacity heterogeneity (Cohen & Levinthal, 1990):
+### 4.3 Samples
 
-| Type | Institution Count | Institution-Years (of 528) | Example Institutions |
-|------|:---:|:---:|-----------------------|
-| C9 League (elite research universities) | 20 | 334 | Tsinghua University, Peking University, Zhejiang University |
-| Transport-specialized universities | 5 | 82 | Beijing Jiaotong University, Tongji University, Southwest Jiaotong University |
-| National research institutes | 2 | 32 | Chinese Academy of Sciences, University of Chinese Academy of Sciences |
-| C7 League (national defense universities) | 2 | 34 | Beihang University, Beijing Institute of Technology |
-| Teaching-focused universities | 4 | 46 | Shenzhen University, Soochow University |
-| **Total** | **33** | **528** | |
+| Sample | Definition |
+|---|---|
+| Population | 213,328 works, 89 candidate institutions, 2007-2023 |
+| 33-institution subsample | The Chinese institutions among the global top 100 in patent-cited output from the original query (selected on the outcome). 11,271 institution-work rows, 9,294 unique works; 32.2% of rows belong to works with several institutions. Institution-year panel: 541 non-empty cells, none filled with zero. Covers 92% of cited works in the candidate pool in 2007 and 35% in 2023 |
+| Transport tag | Keyword match on Lens field-of-study terms (manuscript Appendix Table A5). Covers 42.6% of works in 2007, 18.7% in 2023 (23.6% pooled); 22.2% of the institution-work rows of the 33-institution subsample. A keyword screen, not a classification of research content; no conclusion depends on it |
+
+Institution types (C9, C7, transport, research, teaching) in `inst_coords_33.csv` are descriptive labels and do not follow official lists.
 
 ---
 
-## Step 1 — NLP-Augmented Bayesian Transition Model (`step1_btm_nlp_v6.py`)
+## 5. Analysis modules and where results are stored
 
-### What it does
+The mapping below follows file names and the manuscript's table and figure numbering. Please verify a given number against `outputs/final_numbers/H_ledger.csv` before citing it.
 
-This step constructs all NLP-derived covariates and estimates Bayesian models of knowledge-transfer state dynamics.
+### 5.1 Code
 
-**Stage 1 — Text Processing and Feature Engineering**
+| Script | Content |
+|---|---|
+| `code/01_numbers_v7.py` | Link construction between works and citing patents, cohort series (stage v7) |
+| `code/02_analysis_v7_v8.py` | Cohort compression, compression contrasts, placebo analysis against random topic groups (stages v7-v8) |
+| `code/03_recompute_v9_v12.py` | Recomputation of every number reported in the manuscript from one place; writes the consistency ledger and manifest (stages v9-v12) |
 
-1. Cleans and encodes title + abstract (truncated to 800 characters) + keywords using `sentence-transformers/paraphrase-MiniLM-L6-v2` (Siamese BERT architecture; Reimers & Gurevych, 2019). Falls back to TF-IDF + SVD if the transformer model is unavailable.
-2. Applies K-Means clustering with Gap Statistic selection (minimum K = 5) to identify transport research sub-domains (Gap(5) = 1.6634 > Gap(4) = 1.6476).
-3. Constructs four institution-level spatial weight matrices:
-   - `W_geo`: Geographic inverse-distance decay based on institutional geocoordinates
-   - `W_type`: Institutional-type homophily (same organizational class = higher weight)
-   - `W_region`: Shared administrative macro-region membership
-   - `W_text`: Pairwise cosine similarity between institutional BERT embedding centroids
-4. All matrices are row-normalized. `W_text` is assigned weight 0 in the composite `W_combo` due to negligible discriminative power (discrimination ratio = 0.002) — this is reported as a null/negative supplementary finding (see S2 below), not omitted silently.
+The scripts were exported from Jupyter notebooks (code cells only, outputs removed, user paths replaced by `.`). Run them in numeric order.
 
-**Stage 2 — Institution–Year Panel Construction**
+### 5.2 Manuscript item to file
 
-Aggregates paper-level NLP features into an institution × year panel (N = 528 observations). Four covariates are constructed:
+| Manuscript item | Main file(s) |
+|---|---|
+| Table A1 (link quality) | `outputs/tables/v7/00_link_QA.csv`, `00_link_coverage_by_year.csv` |
+| Figure 1 (truncation, cohort shares) | `outputs/tables/A3_cohort_curves.csv`, `C_same_exposure.csv`, `C_same_exposure_summary.csv`, `figures/fig1_*` |
+| Figure 2 (paper-level SD, ICC, upper tail) | `outputs/tables/A_paper_level_SD_33.csv`, `A_sigma_definitions.csv`, `figures/fig2_*` |
+| Figure 3 (sigma vs sampling noise) | `outputs/tables/E_sigma_vs_noise.csv`, `E_2012_loo.csv`, `E_2012_leave_one_institution_out.csv`, `figures/fig3_*` |
+| Table 1 (compression contrasts) | `outputs/tables/B_table1_contrast.csv`, `outputs/final_numbers/H_table1.md` |
+| Table 2, Figure 4 (BRI-related group vs random groups) | `outputs/tables/D_table2_final.csv`, `D_group_cells_primary.csv`, `D_null_lr.npz`, `outputs/final_numbers/H_table2.md`, `figures/fig4_*` |
+| Table A2 (sensitivity) | `outputs/tables/D_sensitivity.csv` |
+| Table A3 (trend comparison, AIC) | `outputs/final_numbers/H_tableA3_recomputed.csv` |
+| Table A7 (placebo event years) | `outputs/tables/D_event_year_scan.csv` |
+| P-value calibration, nominal significance counts | `outputs/tables/B1_significance_counts.csv`, `B1b_nominal_significant.csv`, `B2_pvalue_calibration.csv` |
+| Date missingness and agreement | `outputs/tables/A1_missingness_by_year.csv`, `A1b_by_type.csv`, `A2_agreement.csv`, `A3b_contrast_DID.csv` |
+| Table 3, Figures 5-6 (Moran's I, weights, Beijing group) | `outputs/tables/F_table3_definition_check.csv`, `outputs/final_numbers/H_table3.md`, `figures/fig5_*`, `fig6_*` |
+| Section 4.5, Figure 7, Table A6 (co-authorship) | `outputs/tables/F_noise_adjusted_moran.csv`, `F_coauthor_robustness.csv`, `outputs/final_numbers/H_coauthor.md`, `figures/fig7_*` |
+| Text numbers | `outputs/final_numbers/H_text_fill.md`, `H_numbers.json` |
+| Manuscript vs recomputed values | `outputs/final_numbers/H_ledger.csv`, `outputs/tables/G_consistency_report.csv` |
+| Run manifests | `outputs/final_numbers/manifest_v12.json`, `outputs/tables/analysis_manifest_v9.json`, `v7/analysis_manifest_v7.json`, `v8/analysis_manifest_v8.json` |
+| Transport-tag validation sample | `outputs/tables/v8/validation_sample_200.csv`, `v8_08_transport_tag_share_by_year.csv` |
 
-| Covariate | Formula | Interpretation |
-|-----------|---------|----------------|
-| `tech_prox` | cos(TF-IDF centroid, patent frontier vector) | Baseline absorption probability |
-| `research_novelty` | 1 − cos(BERT_t, BERT rolling 3yr mean) | Semantic departure from prior trajectory |
-| `topic_entropy` | −Σ π_k log(π_k) over 5 topic clusters | Portfolio diversification |
-| `intra_cohesion` | Mean pairwise BERT cosine similarity within institution-year | Internal semantic coherence |
+### 5.3 Measures
 
-**Stage 3 — Bayesian Models**
+| Measure | Definition |
+|---|---|
+| Cumulative metric | Number of citing patents at extraction (November 2026) |
+| Fixed-window metrics | Citing families whose priority date falls within 3 or 5 years of the publication year, for cohorts with closed windows (up to 2020 and 2018) |
+| Dispersion (sigma) | Standard deviation across institutions of log(1 + mean citing patents), computed year by year and averaged over the years of a period; at paper level, the SD of log(1 + count) among cited works |
+| Between-institution share | Intraclass correlation (ICC) of paper-level log counts, by year |
+| Spatial outcome | Period-average deviation of an institution's yearly log(1 + mean citing patents) from the year mean across institutions (2013-19) |
+| Noise-adjusted outcome z | Institution mean of single-institution works standardised by its sampling error (used for the co-authorship analysis) |
 
-| Model | Specification | Purpose | Maps to Manuscript Section |
-|-------|---------------|---------|------------------------------|
-| M1 | Hierarchical Negative Binomial with geographic spatial lag | Baseline spatial diffusion | §4.4 |
-| M2 | Bayesian Markov Transition Model (states: Low / Medium / High) | Performance state dynamics | §4.5, S4 |
-| M3 | Spatiotemporal NegBin with time-varying ρ(t) via Gaussian random walk | Temporal spillover evolution | §4.4, S2 |
-| M4v2 | NLP × Spatial Interaction NegBin (four channels + two interaction terms) | NLP-spatial channel integration | §4.5, S5 |
-| M5 | Bayesian mediation (BRI-partner co-authorship → post-break intensity) | Indirect-effect estimation for the interface-exposure proxy | §4.1 |
-| M6 | Multi-state degradation / reliability analysis (CTMC) | Long-run state persistence | S4 |
+### 5.4 Tests
 
-Model comparison uses LOO-CV and WAIC via ArviZ. MCMC settings: 2,000 draws, 2,000 tuning steps, 4 chains, `target_accept = 0.90`.
-
-### Key outputs
-
-| File | Description |
-|------|-------------|
-| `panel_data_v6.csv` | Institution × year panel with all NLP covariates (primary input for Steps 2–3) |
-| `W_geo.npy` / `W_type.npy` / `W_region.npy` / `W_text.npy` / `W_combo.npy` | Spatial weight matrices |
-| `T_bayesian.csv` | Bayesian transition probability matrix (3 × 3) |
-| `trace_M1.nc` … `trace_M5_mediation.nc` | ArviZ InferenceData traces (NetCDF format) |
-| `full_results_v6.0.json` | Master results JSON |
-| `all_posterior_estimates_v6.csv` | Posterior means, HDIs, and P(>0) for all model parameters |
-| `Fig1_panel_overview_v6.0.png` … `FigZ_china_map_v6.0.png` | Publication-quality figures (9 panels) |
-| `topic_descriptions_v6.json` | Topic labels, c-TF-IDF terms, and transport taxonomy assignments |
-
-### Key findings (Step 1)
-
-- **K = 5** sub-domains identified by Gap Statistic; all assigned to transport taxonomy via guaranteed cosine-similarity matching.
-- **Moran's I** (permutation test, 999 relabelings + analytic z-test): I = −0.278, z = −2.32, p = 0.018 (permutation p = 0.021 for W_geo) — negative spatial autocorrelation, consistent with competitive specialization rather than passive imitation among proximate institutions. **Caution:** n = 33 institutions; expected Moran's I under randomness ≈ −0.031, so magnitude should be interpreted cautiously despite consistent direction across five weight-matrix specifications.
-- **W_text discrimination ratio = 0.002** — reported as the empirical basis for S2 (partial support, Δr = +0.216, p = 0.065), not as a silently discarded feature.
-- **Steady-state distribution** (M2 Markov model): Low = 0.308, Medium = 0.409, High = 0.283.
-- All MCMC chains converged: max R̂ < 1.006 across M1–M4v2.
+| Test | Purpose |
+|---|---|
+| Truncation: cohort shares under cumulative and fixed windows; same-exposure comparison (first citing patent within 0, 1, 2 years) | RQ1 |
+| Selection and compression: original selection rule applied to the full candidate pool; bootstrap contrasts of paper-level SD and of the share with exactly one citing patent; sensitivity to dropping 2012 and to the transport tag | RQ1 |
+| Sampling noise: observed sigma vs sigma under random reassignment of institution labels preserving cell sizes | RQ1 |
+| Period specificity: BRI-related keyword groups vs 1,000 random topic groups of similar prevalence (difference-in-differences of log ratios); permutation p-values p_emp and p_adj; Benjamini-Hochberg correction; drop-2012/2013, start/end-year and placebo-event-year checks; linear, quadratic and hinge trends (AIC) | RQ2 |
+| Space: Moran's I with permutation inference, alternative weights (inverse distance with and without floors, k nearest neighbours, same-city exclusion, city-level aggregation), pairwise gap-versus-distance tests, exploratory co-authorship weights | RQ3 |
 
 ---
 
-## Step 2 — Empirical Hypothesis Testing (`step2_empirical_tra_v4.py`)
+## 6. Main results (revised manuscript)
 
-### What it does
+### 6.1 Truncation (Section 4.1, Figure 1)
 
-Tests **four pre-registered core hypotheses** (H1–H4), reports **one robust auxiliary structural pattern** (pre-registered as a directional prediction rather than a numbered hypothesis), and transparently reports **six further pre-registered exploratory checks** (S1–S6). All ten items were specified together with their estimators and significance thresholds in a single analysis protocol drafted prior to finalizing results (protocol in this repository). The core/exploratory distinction reflects each item's centrality to the paper's mechanism-specificity claim, fixed independently of which items proved statistically significant.
+- The cumulative cited share rises to 11.5% for the 2017 cohort and falls to 5.5% for 2023. Under the 5-year window it rises to about 10% for 2017-2018 and does not fall in closed cohorts; under the 3-year window it is 8-9% for 2017-2020.
+- At equal exposure, the share with a first citing patent within 0, 1 and 2 years for the latest observable cohorts is similar to 2016-18 (ratios 1.14, 1.01, 0.94). The decline of the cumulative share is largely lack of exposure time.
+- Among cited works, the share with exactly one citing patent stays between 0.63 and 0.72 under the 5-year window but rises from 0.47 to 0.83 under the cumulative metric.
 
-### Core hypothesis register (H1–H4)
+### 6.2 Selection, compression and sampling noise (Section 4.2, Figures 2-3, Table 1)
 
-| ID | Hypothesis | Mechanism | Empirical Test | Result |
-|----|------------|-----------|----------------|--------|
-| H1 | BRI 2013 produces a structural break in patent-citation intensity; MiC2025, NEV 2017, and COVID-19 do not | Policy regime change | Chow–permutation + Bai–Perron | **Supported** (Chow F = 6.84, p = .008; only event to exceed threshold) |
-| H2 | System-wide institutional convergence follows the BRI break | Interface-driven equalization | σ/β-convergence + Phillips–Sul | **Strongly supported** (β = −0.895***; half-life = 3.1 yr; single convergence club) |
-| H3 | Inverted-U relationship between research novelty and patent-citation yield | Optimal recombination / absorptive capacity | Quadratic MC-RE regression | **Supported** (β_novelty² = −0.763**; optimum = 0.472 vs. system mean 0.239) |
-| H4 | Open-access share amplifies patent-citation yield, more strongly at high technological proximity | Access-barrier removal | MC-RE + IPTW + Journal FE + 5 identification strategies | **Strongly supported** (β = +0.326***; stable across strategies; interaction β = +7.06, p = .003) |
+- Applying the same selection rule to the full candidate pool reproduces the pattern: the paper-level SD of log counts among unique cited works falls from 0.719 to 0.232 (2007 to 2023) in the pool and from 0.675 to 0.222 in the 33 institutions.
+- sigma of institution means: 0.478 (2007-12), 0.266 (2013-19), 0.126 (2020-23), a decline of about 74% (73.6%). The decline is 71.0% when works shared among institutions are excluded.
+- Almost all variance lies within institutions: ICC between 0 and 0.10 in every year. The paper-level SD (institution-work rows) falls about 65% (0.650 to 0.225); the share of works with three or more citing patents falls from 0.38 to 0.03.
+- Observed sigma lies inside its label-permutation 95% interval in 16 of 17 years (exception: 2020), so the decline in sigma is largely the decline of sampling noise.
+- Under the 5-year window a smaller compression remains (paper-level SD change -0.107, 95% CI -0.173 to -0.040, between 2007-12 and 2013-18). It depends on the 2012 cohort (excluding 2012: -0.064, -0.137 to +0.003) and is not detected among transport-tagged works (limited power). It cannot be separated from changes in the citing environment (China-only share of citing families: 13% for the 2007 cohort, 37% for 2018).
 
-*Multiple testing: a single Holm–Bonferroni correction spans H1–H4 only, with a nested Westfall–Young correction applied within the H1 multi-event family (4 policy events × 3 outcome definitions). All four hypotheses are supported at family-wise α = .05; H1, H2, and H4 survive at α = .005.*
+### 6.3 Period specificity (Section 4.3, Table 2, Figure 4)
 
-### Robust auxiliary pattern (not a numbered hypothesis)
+- Primary BRI-related group, difference-in-differences of log ratios: 0.586 (cumulative), 0.521 (5-year), 0.547 (3-year).
+- Cumulative: p_emp = .027, p_adj = .263; neither survives Benjamini-Hochberg correction (.086 and .300). Fixed windows: p_emp .10-.14 (all works), .25-.33 (transport-tagged).
+- 2013 does not stand out among placebo event years 2010-2016 (rank 4-6 of 7 by |z|). A gradual trend fits about as well as a break at 2013.
+- The primary group has 7-20 cited works before 2013 under fixed windows (25-47 cumulative). The design is informative about changes of about 1.5 to 2.2 times or more in relative citation probability, not about moderate ones.
+- Nominal p < .05 under fixed windows appears in 2 of 32 specifications, both dropping the 2013 cohort (3 cited works). These are exploratory and uncorrected for the number of specifications.
 
-| Pattern | Mechanism | Empirical Test | Result |
-|---|---|---|---|
-| Competitive spatial specialization | Proximate institutions differentiate rather than converge | Global + local Moran's I, SAR/SEM/SDM, 5 weight matrices, permutation inference | **Robust** (Moran's I = −0.278, p = .018; permutation p = .021; consistent sign across 5 matrices) |
+### 6.4 Spatial scale and weights (Section 4.4, Table 3, Figures 5-6)
 
-### Supplementary exploratory checks (S1–S6) — mixed/null, not load-bearing
+| Weights (row-standardised, 2013-19, n = 33) | I | p |
+|---|---|---|
+| Inverse distance, no floor | -0.262 | .051 |
+| Inverse distance, 25 km floor | -0.142 | .161 |
+| Inverse distance, 100 km floor | -0.076 | .345 |
+| Inverse distance, excluding same-city links (< 30 km) | 0.000 | .507 |
+| k nearest neighbours, k = 3 | -0.195 | .174 |
+| k nearest neighbours, k = 5 | -0.098 | .443 |
+| City-level aggregation, 25 km floor (18 cities) | -0.093 | .651 |
 
-| ID | Check | Result | Key statistic |
-|----|-------|--------|----------------|
-| S1 | Institutional heterogeneity × technology proximity | Partial | δ(C9−transport) = +7.48**; VIF = 4.8 flags collinearity |
-| S2 | Spatial channel evolution (text similarity, W_text) | Partial | Δr = +0.216, p = .065 |
-| S3 | Regional × policy interaction (Made in China 2025) | Rejected | DiD = −0.017, n.s. — consistent with, not confirmatory of, H2 pre-emption |
-| S4 | Institutional performance-state persistence | Partial | Low-state trap P(L→L) = .650; research institutes P(H→H) = .765 |
-| S5 | Topic-entropy → technological-proximity mediation | Partial | a-path confirmed; ACME n.s. (Sobel p = .297) |
-| S6 | Novelty × institutional rank interaction | Rejected | β = +0.143, n.s. |
+- No specification is significant at 5%. Same-city links carry 56.8% of the total weight in the no-floor matrix.
+- Pairwise outcome gaps are unrelated to distance (Spearman rho = -0.02, p = .80). Within the Beijing group, dispersion falls about as fast as outside it, and the Beijing-minus-others mean gap is close to zero after 2013 with a bootstrap interval that includes zero.
 
-### Estimation approach
+### 6.5 Co-authorship ties (Section 4.5, Figure 7, Table A6; exploratory)
 
-- **Primary estimator**: Mundlak–Chamberlain Correlated Random Effects (MC-RE), augmenting conventional random effects with institution-level means of time-varying regressors. Asymptotically equivalent to fixed effects while retaining time-invariant institutional characteristics (Mundlak, 1978; Chamberlain, 1982; extended to two-way heterogeneity per Wooldridge, 2025).
-- **Robustness estimators**: Within Fixed Effects (entity-demeaning), Poisson QMLE, First Differences, sub-period splits.
-- **Structural break identification**: Chow (1960) tests at four candidate policy dates, supplemented by Bai–Perron (1998, 2003a, 2003b) multiple-break search and permutation null distributions (4,993 resamples; ±2-year exclusion windows; Piehl et al., 2003).
-- **Spatial modeling**: Bayesian spatial negative-binomial (SAR, SEM, SDM specifications) using composite proximity matrix W_combo = 0.5·W_geo + 0.3·W_type + 0.2·W_region.
-- **Convergence diagnostics**: Phillips–Sul (2007) log-t test + club-clustering algorithm; segmented OLS on σ-dispersion; quantile-β regression (Koenker–Bassett).
-- **OOS validation**: 5-fold walk-forward cross-validation with expanding windows; rank-based metrics (Spearman ρ, NDCG) treated as primary since exogenous shocks shift levels without necessarily altering institutional rankings.
-
-### Key outputs
-
-| File | Description |
-|------|-------------|
-| `Table1_descriptives.csv` | Summary statistics (N = 528) |
-| `Table2_MC_coefs.csv` / `Table2_latex.tex` | MC-RE regression table (6 nested specifications) |
-| `Table3_core_hypothesis_summary.csv` | H1–H4 register with empirical outcomes |
-| `Table4_supplementary_checks.csv` | S1–S6 register (mirrors manuscript Table 5 / Appendix B, Table B1) |
-| `empirical_master_results_v4.json` | Full results JSON, tagged `core` vs. `exploratory` per item |
-| `Fig1_H1_policy_shocks.png` … `Fig5_H3H4_diffusion_levers.png` | Core-hypothesis figures (mirrors manuscript Figs. 3–5) |
-| `OOS_model_comparison.csv` / `OOS_walkforward.csv` | Walk-forward predictive performance |
-
-### Key findings (Step 2)
-
-- **H1 (Structural Break)**: BRI 2013 is the only policy event producing a significant structural break in patent-citation intensity (Chow F = 6.84 > critical value 3.41; F-ratio ≈ 3.4 vs. permutation placebo mean; permutation p ≈ .002–.005; Westfall–Young-adjusted p ≈ .01–.02; Bai–Perron BIC-minimizing break: 2013, 95% CI [2012–2014]). MiC2025 (F = 0.72), NEV (F = 0.11), and COVID-19 (F = 0.06) all fall well below the Chow critical threshold and are non-significant under Westfall–Young correction (adjusted p = 1.000). Pre-BRI event-study coefficients (τ = −5 to −1) are jointly insignificant (F = 0.412, p = .841), validating parallel pre-trends. The BRI coefficient remains stable when concurrent policy dummies are included (F = 7.89, p < .001).
-- **Trajectory shape**: The ITS estimate identifies a genuine **reversal**, not a deceleration: the pre-BRI trend is rising (β_pre ≈ +0.04/year) from 2007 to a 2013 peak, and this trend **reverses** into a sustained post-BRI decline (β_post = −0.028/year). Two readings remain consistent with this pattern and are not fully distinguishable with the current design: (i) BRI triggers a genuine turning point, or (ii) the pre-2013 rise reflects an unrelated build-up (e.g., a maturing indexing base) whose natural plateau coincides with, rather than is caused by, the BRI launch. The pipeline reports the 2013 break as a documented turning point without adjudicating between these two readings.
-- **H2 (Convergence)**: σ-convergence slope = −0.028*** (full period); BRI→COVID sub-period slope = −0.034** (sharpest compression phase); post-COVID compression continues at a comparable rate (−0.033**). β-convergence = −0.895*** (robust to baseline definition: −0.895 and −0.901); quantile regressions show stronger catch-up among initially lagging institutions (β_Q25 = −1.12) than higher performers (β_Q75 = −0.78). Phillips–Sul log-t b = 1.249*** (t = 6.85; single convergence club confirmed, n = 33; b < 2 indicates *transitional*, not absolute, convergence). Implied post-2013 half-life ≈ 3.1 years — markedly faster than comparable European regional R&D convergence (5–10 years; Von Lyncker & Thoennessen, 2017).
-- **H3 (Novelty Optimum)**: Estimated optimal research novelty = 0.472 (95% bootstrap CI: [0.38, 0.56]), robust across SIMEX measurement correction, instrumental-variable, and GAM/spline alternatives. Current system mean = 0.239, implying approximately 20–22% unrealized patent-citation yield for institutions in the lowest novelty tercile, addressable through portfolio reallocation without additional funding.
-- **H4 (Open Access)**: OA share positively associated with patent-citation yield across five identification strategies (β = 0.326 main; IPTW-ATT = 0.290; journal FE = 0.298; lagged OA = 0.311; within-institution FE = 0.169). Interaction with technological proximity significant (β = +7.06, p = .003), indicating OA amplification is strongest when institutional portfolios are already aligned with industrial application domains. Mean covariate SMD after IPTW balancing = 0.030 (pre-weighting = 0.221), confirming adequate covariate balance.
-- **Auxiliary spatial pattern**: Global Moran's I = −0.278 (z = −2.32, p = .018), robust across five alternative weight matrices (range −0.241 to −0.312, all p < .05) and confirmed by permutation inference (p = .021). SAR/SEM/SDM coefficients consistently negative (ρ = −0.214, λ = −0.193, spillover = −0.167). Spatial residual Moran's I non-significant across all specifications, ruling out omitted spatial dependence. **Caution flagged in output**: n = 33 institutions; asymptotic z-tests may be unreliable at this sample size.
-- **OOS Performance**: Walk-forward Spearman ρ = 0.313 (rank-stable across folds); NDCG ≥ 0.811. Level R² is uniformly negative (mean = −1.037), reflecting structural non-stationarity from the 2013 and 2020 breaks rather than model misspecification; regime-switching ensembles that split estimation at 2013 improve but do not eliminate this gap (mean level-R²: −1.037 → −0.430). Policy implications are therefore grounded in structural parameter estimates rather than point forecasts.
+- Co-authorship weights (noise-adjusted outcome, single-institution works, 32 institutions): I = 0.101 (p = .008, counts), 0.068 (.015, log), 0.044 (.049, binary), 0.215 (< .001, excluding same-city pairs); distance weights: -0.184 (.068), 0.024 (.259) excluding same-city pairs.
+- I is positive in all six co-authorship variants and p < .05 in five. Pairwise gaps are unrelated to the number of co-authored works (rho = 0.01, p = .83).
+- This is an exploratory, descriptive association. It does not measure knowledge flows, several specifications were examined without correction for multiplicity, and similarity may partly reflect institution type.
 
 ---
 
-## Step 3 — Supplementary Analysis (`step3_supplementary_v2.py`)
+## 7. Setup and re-running
 
-### What it does
+### 7.1 Requirements
 
-Provides robustness checks, convergence club diagnostics, and an integrated governance dashboard covering both the core hypotheses (H1–H4) and the auxiliary/exploratory items (spatial pattern, S1–S6).
+Python 3 with the scientific stack used by the scripts (numpy, pandas, scipy, statsmodels, matplotlib; the maps use a GADM province-boundary file). See the import lines at the top of each script for the complete list. The v1 Bayesian pipeline (PyMC, sentence-transformers) is **not** needed for v2.
 
-| Module | Method | Key Result |
-|--------|--------|------------|
-| A | Chow F-test with permutation null (4,993 resamples; ±2-year exclusion) | BRI: F = 6.84, p ≈ .002–.005 vs. placebo distribution |
-| B | Walk-forward OOS: Spearman ρ, NDCG, QWK | Pre-COVID ρ = 0.295; NDCG ≥ 0.811 across all folds |
-| C | Domain-threshold sensitivity sweep (β_OA, β_tech) | OA share CV stable; tech proximity CV unstable — reflects measurement artifact for narrow-domain institutions (see S1) |
-| D | σ-convergence segmented OLS | BRI→COVID slope = −0.034**; Post-COVID slope = −0.033** |
-| E | Pairwise spatial differentiation | β_distance = −0.041, p = .016 (larger citation gaps among proximate institution pairs) |
-| SUP-6 | Phillips–Sul log-t test + club-clustering algorithm | Global b = 1.249*** (transitional convergence); single club confirmed (n = 33) |
-| SUP-7 | S1–S6 consolidated evidence table | Mirrors manuscript Appendix B, Table B1; each item tagged `partial` / `rejected` |
-| SUP-8 | Integrated results dashboard | Panels separated into core (H1–H4), auxiliary (spatial), and exploratory (S1–S6) tiers |
-| SUP-9 | Narrative strategy guide | Journal-agnostic submission narrative strategies |
+### 7.2 Expected inputs (not included)
 
-### Bug fixes applied
+The scripts were written for the working directories used during the revision. They expect:
 
-- **BUG-FIX-1** (`phillips_sul_logt`): Replaced `res.params["x1"]` with `res.params[1]` (integer index) to resolve `statsmodels` OLS + NumPy array incompatibility when the design matrix is passed as a plain array rather than a DataFrame.
-- **BUG-FIX-2** (`form_clubs`): Replaced `np.ix_()` with direct fancy indexing `mat[np.array(idx, dtype=int), :]` to resolve index type mismatch during club sub-matrix extraction.
-- **BUG-FIX-3** (v2.1): Corrected `institution_type_counts` dictionary in `SUP8_results_dashboard_v2.png` generation — C9 count changed from 18 to 20, Teaching count changed from 6 to 4, to match the manuscript's Section 3.1 institution roster and restore Σ(institution-type counts) = 33.
-- **BUG-FIX-4** (v2.1): Corrected `chow_F_BRI` constant from 8.03 to 6.84 and `F_ratio` from 3.95 to ≈3.4 across all downstream JSON/CSV outputs, to match the manuscript's Table 3.
+- raw Lens exports (yearly text exports, "all" and "cited") and the 89-institution candidate list, in the directories set by the path constants at the top of each script (`lens_export/`, `data_R1/` in the original setup);
+- the original 33-institution export, used for the comparison between the candidate pool and the original sample;
+- a GADM province boundary file for the maps.
 
-### Key outputs
+Update the path constants before running. Output folders in the original setup were `outputs_R1_v7` to `outputs_R1_final`; `outputs/` in this repository holds copies of the resulting tables.
 
-```
-outputs/supplementary_v2/
-├── A_event_study_chow.csv          # Chow F statistics + permutation p-values (4 policy events)
-├── B_oos_walk_forward.csv          # Walk-forward CV metrics (5 folds)
-├── C_domain_sensitivity.csv        # β coefficient CV across threshold definitions
-├── D_sigma_convergence.csv         # Segmented σ-OLS results by sub-period
-├── E_spatial_pairs.csv             # Pairwise distance–citation gap estimates
-├── SUP6_convergence_clubs_v3.csv   # Phillips–Sul log-t statistics + club assignments
-├── SUP6_convergence_clubs_v3.png   # Convergence club visualization
-├── SUP7_exploratory_checks_S1toS6.csv  # Consolidated S1–S6 evidence table
-├── SUP8_results_dashboard_v2.png   # Integrated dashboard (core / auxiliary / exploratory tiers)
-└── SUP9_narrative_strategy.json    # Submission narrative strategies
-```
-
----
-
-## Forecasting Toolkit: Transferability
-
-A central contribution of this repository is a **replicable diagnostic toolkit** for detecting knowledge-diffusion trajectory switches in national R&D systems. The toolkit requires only institutional publication metadata and patent-citation records available from open bibliographic sources (Lens.org, OpenAlex, Dimensions), making it transferable beyond the Chinese transport context.
-
-| Diagnostic | Script Location | Transfer Requirement |
-|------------|-----------------|----------------------|
-| Permutation-Chow structural-break test | `step3_supplementary_v2.py` Module A | T ≥ 10 pre-break observations; policy dates known a priori |
-| Phillips–Sul log-t convergence test | `step3_supplementary_v2.py` SUP-6 | T ≥ 15; balanced or near-balanced panel |
-| NLP novelty + proximity indices | `step1_btm_nlp_v6.py` Stage 2 | Abstract text + keyword metadata available |
-| Bayesian spatial NegBin | `step1_btm_nlp_v6.py` Stage 3 | Institution geocoordinates; institutional-type classification |
-| Walk-forward rank validation | `step2_empirical_tra_v4.py` OOS module | Minimum 3 forecast folds; Spearman ρ and NDCG as primary metrics |
-
-**Scope conditions for generalization:** The mechanism-specificity finding (interface-creating programs are associated with structural breaks; funding-scale programs are not, within this n = 4 policy-event comparison) is most plausible in national R&D systems where (a) initial cross-institutional dispersion σ > 0.3, (b) the candidate program embeds formal university–industry collaboration mechanisms at the project level, and (c) patent-citation indexing coverage is sufficient for reliable measurement (estimated minimum: ≥ 500 patent-cited publications per institutional panel). **This remains a structured observational comparison across four policy episodes, not a natural experiment; cross-national replication (Section 5.3 of the manuscript) is identified as the necessary next step before generalizing beyond this single national program.**
-
----
-
-## Setup and Requirements
-
-### Installation
+### 7.3 Order
 
 ```bash
-pip install numpy pandas scipy statsmodels scikit-learn matplotlib seaborn tqdm
-pip install pymc pytensor arviz
-pip install sentence-transformers  # optional; TF-IDF + SVD fallback used if absent
-pip install lightgbm               # optional; sklearn GBM fallback used if absent
+python code/01_numbers_v7.py
+python code/02_analysis_v7_v8.py
+python code/03_recompute_v9_v12.py
 ```
 
-**Python ≥ 3.9** is required. All three scripts are self-contained and can be run independently, provided the outputs of earlier steps are available in the expected directories.
+The derived files in `data/derived/` are provided so that downstream tables can be inspected without the raw exports.
 
-### Path configuration
-
-Each script exposes path constants at the top of the file. Update these before running:
-
-```python
-# step1_btm_nlp_v6.py
-FILE_PATH = "data/scholarly_works.csv"    # input CSV
-OUT_DIR   = "outputs/btm_nlp_v6"          # Step 1 output directory
-
-# step2_empirical_tra_v4.py
-V6_OUT  = "outputs/btm_nlp_v6"           # Step 1 outputs (panel, spatial matrices)
-RAW_CSV = "data/scholarly_works.csv"     # original CSV (for sub-domain analysis)
-OUT_DIR = "outputs/empirical_tra_v4"
-
-# step3_supplementary_v2.py
-V6_OUT    = "outputs/btm_nlp_v6"
-STEP2_OUT = "outputs/empirical_tra_v4"
-OUT_DIR   = "outputs/supplementary_v2"
-```
-
-### Execution order
-
-```bash
-python step1_btm_nlp_v6.py       # ~30–60 minutes depending on hardware (MCMC sampling)
-python step2_empirical_tra_v4.py
-python step3_supplementary_v2.py
-```
-
-> **Performance note:** Step 1 caches BERT embeddings and K-Means results in `outputs/btm_nlp_v6/nlp_cache/`. Subsequent runs load the cache automatically and skip recomputation, reducing runtime to approximately 5–10 minutes for Steps 2 and 3.
+> **Status.** The scripts were exported from notebooks and have **not been re-run end to end in a clean directory**. Treat `outputs/final_numbers/H_ledger.csv` (manuscript vs recomputed values) as the record of what was verified.
 
 ---
 
-## Reproducibility
+## 8. Reproducibility
 
-- `np.random.seed(42)` and `random_seed=42` are set consistently throughout all scripts.
-- **MCMC settings:** 2,000 draws, 2,000 tuning steps, 4 chains, `target_accept = 0.90`. All chains converged with max R̂ < 1.006 across M1–M4v2.
-- **Imputation:** 9.1% of institution-year cells (48 observations, concentrated in teaching universities during 2007–2010) were imputed using prior-year institution-specific distributions. Imputed rows are flagged via the `imputed_share` column in `panel_data_v6.csv`. The `imputed_share` contamination control is statistically insignificant across all six MC-RE specifications (|t| < 1.12). Complete-case analysis (n = 480) replicates the BRI structural break (F = 7.64, p < .001), σ-convergence (β = −0.881), and the OA effect (β = 0.311) with negligible attenuation.
-- **W_text exclusion:** The text-similarity spatial weight matrix is assigned weight 0 in `W_combo` due to a discrimination ratio of 0.002. This is reported transparently as the empirical basis for the S2 exploratory check (Δr = +0.216, p = .065), not treated as a discarded/omitted variable.
-- **Sample selection caveat:** The 33-institution panel is selected on above-average patent-citation performance (top 100 globally in patent-cited transport research). Effect magnitudes are therefore most directly applicable to the upper stratum of Chinese transport R&D. Sensitivity analysis extending to top-50 and top-150 institutions yields qualitatively identical structural-break and convergence estimates.
-- **Observational design:** All results are observational throughout. The structural break, convergence patterns, and governance-lever associations are consistent with the proposed theoretical mechanisms but do not constitute causal identification. The mechanism-specificity claim in particular rests on a comparison across only n = 4 policy events; the permutation test addresses within-event false-positive risk but cannot, by construction, resolve the small between-event sample. The appropriate inferential claim throughout is that observed patterns are *consistent with*, but do not *causally establish*, the mechanism-specificity interpretation.
-
----
-
-## Data Availability
-
-Replication data, NLP pipeline code, permutation-Chow scripts, IPTW weighting routines, regime-switching ensemble specifications, and all Bayesian model files are publicly available at:
-
-**[https://github.com/LEEYJ1021/TransDiff-CN](https://github.com/LEEYJ1021/TransDiff-CN)**
-
-The input dataset (`scholarly_works.csv`) was exported from [Lens.org](https://www.lens.org) under standard academic access terms. Users should obtain their own export for replication; the pipeline will reproduce all results from any export matching the column schema described in the Input Data section.
+- **Single recomputation stage.** `03_recompute_v9_v12.py` recomputes the numbers quoted in the manuscript and writes `H_ledger.csv`, which lists each manuscript value, its recomputed value and whether they match. Where text and recomputation differed, the recomputed value replaced the text. Some ledger rows record earlier wording that the final manuscript already corrects; check the `note` column.
+- **Seed.** Fixed seed 20261122, recorded in `outputs/final_numbers/manifest_v12.json`.
+- **Resampling sizes.** Table 3 and Appendix Table A6: 49,999 permutations. Annual Moran's I (Figure 5a): 4,999 permutations. Random topic groups: 1,000. Fixed cell-size resampling (Figure 3a): 300 resamples. Label permutations for sigma (Figure 3b): 500.
+- **Run-to-run variation.** Permutation p-values based on 49,999 permutations vary by about +/-.005 across runs; other p-values rest on fewer permutations or random groups and vary by about +/-.01. The Appendix Table A2 sensitivity runs use an independent Monte Carlo draw, so their p_emp differ slightly from Table 2 (cumulative .034 vs .027; 5-year .111 vs .103; 3-year .133 vs .139).
+- **Panel.** 541 non-empty institution-year cells; no empty cell is filled with zero and nothing is imputed.
+- **Link quality.** Internal consistency of the patent-paper links is documented (Appendix Table A1); links were not compared with Reliance on Science (Marx and Fuegi, 2020).
 
 ---
 
-## Update Log (v2.0 → v2.1)
+## 9. Known limitations
 
-This update reconciles the repository documentation with the manuscript's core-hypothesis structure after identifying three cross-document inconsistencies during a documentation audit:
+Details are in manuscript Section 5.1.
 
-1. **Hypothesis inflation corrected.** The v2.0 README numbered ten hypotheses (H1–H10) as though all were confirmatory and subject to the same family-wise error correction. The manuscript's pre-analysis protocol (Section 3.3) specifies only H1–H4 as core hypotheses tested against family-wise α = .05; the remaining six items (S1–S6) were always pre-registered as auxiliary exploratory checks. v2.1 restores this distinction throughout Step 2 and Step 3 documentation and output file naming.
-2. **Structural-break statistics corrected.** BRI Chow F was listed as 8.03 (×3.95 vs. placebo) in v2.0; the manuscript reports F = 6.84 (F-ratio ≈ 3.4, permutation p ≈ .002–.005). v2.1 corrects this throughout, including in `outputs/supplementary_v2/A_event_study_chow.csv` and the dashboard visualization.
-3. **Trajectory narrative corrected.** v2.0 described the post-BRI pattern as "deceleration of an ongoing decline" while separately reporting a rising pre-BRI slope — an internal contradiction. v2.1 adopts the manuscript's dual-reading framing: a genuine reversal at 2013 (rising → declining), with two non-exclusive interpretations (causal turning point vs. coincidental plateau) explicitly flagged as not fully distinguishable with the current design.
-4. **Institution-count arithmetic corrected.** v2.0's institution-type table did not sum to 33 institutions. v2.1 corrects counts to C9 = 20, Transport = 5, Research Institutes = 2, C7 = 2, Teaching = 4 (Σ = 33), matching manuscript Section 3.1.
-
-No underlying data, model code, or estimation results were altered as part of this update — only documentation, output labeling, and narrative framing were corrected to match the manuscript as originally analyzed.
+- **Selection.** The 33 institutions are selected on patent-cited output. Institution-level statements apply only to this sample; institution-level analysis of uncited works would require affiliation fields that the population export lacks.
+- **Exposure.** The export gives no citing date; priority dates stand in for it. Paper dates are missing for 41% of cited works (38% in the full population), so fixed windows carry an error of about one year. Closed windows end in 2018 (5-year) and 2020 (3-year); the lag-0 cell of the equal-exposure comparison includes families with priority dates before the publication year.
+- **Policy attribution.** One policy date, no comparison group, no exposure measure. Period-specific patterns are associational; the design detects only large changes.
+- **Spatial statistics.** With 33 institutions, local statistics are exploratory. Outcome similarity does not measure knowledge flows. The co-authorship network is measured only among patent-cited works, and permutation benchmarks treat institution-work rows as units.
+- **Measurement.** The transport tag was not validated against a content-based classification. The BRI-related keyword dictionary (Appendix Table A5) was fixed before results were examined.
+- **Coordinates** were carried over from the first-submission scripts and were not independently re-verified.
+- **Code.** Exported from notebooks; not re-run end to end in a clean directory (Section 7).
 
 ---
 
-## License
+## 10. Data availability
+
+The institution-year panel, linked paper-patent file, institution coordinate file, analysis code with its manifest and fixed seed, and all output tables are provided as Supplementary Material and in this repository (anonymous repository link as given in the manuscript's Declarations). Raw Lens.org exports are not redistributed; users should obtain their own export (see `docs/lens_query.md`).
+
+---
+
+## 11. Update log
+
+**v2.0 (revision R1)**
+
+- Reconstructed the analysis from the data export in response to the Editor's and Reviewers' comments; the paper became a measurement paper (title changed accordingly).
+- Added: population including uncited works; fixed citation windows and equal-exposure comparison; selection rule applied to the candidate pool; sampling-noise benchmark; random-topic-group placebo design; alternative weights and co-authorship weights; link-quality documentation; ledger and manifest.
+- Removed: hypotheses H1-H6 / S1-S6 structure; Chow and Bai-Perron tests; Phillips-Sul and beta-convergence; Moran's I of -0.278 and the composite weight matrix; novelty optimum; open-access analysis; policy recommendations; Bayesian transition and spatial negative-binomial models.
+- Corrected: panel file with zero-filled and missing cells replaced by a 541-cell panel with no zero filling.
+- Repository: first-submission files moved to `legacy_v1/` (author identifiers redacted; large and LFS-tracked result files are not duplicated there and remain in tag `v1.0-original`); Git LFS rules removed.
+
+**v2.1 (first-submission repository; superseded)** Documentation reconciliation of the first submission. See `legacy_v1/README_v2.1.md`. Its results are not used in the revised manuscript.
+
+---
+
+## 12. License
+
 MIT License. See [LICENSE](LICENSE) for details.
