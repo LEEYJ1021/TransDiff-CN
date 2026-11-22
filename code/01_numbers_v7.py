@@ -293,7 +293,7 @@ else:
 
 # ---- cell 05 ----
 SUBMIT_DIRS = [BASE / "repo_snapshot"]          # 새 익명 저장소 폴더와 보충자료 폴더를 추가하세요
-PATTERNS = ["LEEYJ1021", "yj11021", "hanyang", "Yong-Jae", "Yongjae", ".", "yjlee", "Sangjin", "tobesoft", "korea.ac.kr"]  # 본인 식별 문자열
+PATTERNS = ["__REDACTED_IDENTIFIER__"]  # author-identifier list removed for double-anonymous review
 TEXT_EXT = {".py", ".ipynb", ".md", ".txt", ".json", ".yaml", ".yml", ".toml", ".cfg", ".tex", ".html", ".bib", ".sh", ".ini"}
 hits = []
 for root in SUBMIT_DIRS:
